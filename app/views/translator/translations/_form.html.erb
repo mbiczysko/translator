@@ -1,10 +1,14 @@
-<%= form_tag translations_path, :id => "#{locale}.#{key}".gsub('.', '-'), :class => "translate", "data-remote" => true, :method => "post" do %>
+<%= form_tag translations_path, :id => "#{locale}.#{key}".gsub('.', '-'), :class => "translate_form", "data-remote" => true, :method => "post" do %>
   <%= hidden_field_tag :key, "#{locale}.#{key}" %>
+    <div class="input string">
+    <%= label_tag :value, "#{locale}:", :class => "string" %>
+      <div class="block">
+        <%= text_field_tag :value, val = (begin I18n.backend.translate locale, key; rescue; end), :class => "string" %>
+        <%= submit_tag "Save", "data-disable-with" => "Saving..." %>
+        <% if (default_val = (begin Translator.simple_backend.translate locale, key; rescue; end;)) != val %>
+          <%= link_to "Default", '#', "data-recover" => default_val || "" %>
+        <% end %>
+      </div>
 
-  <span class='locale'><%= locale %>: </span><%= text_field_tag :value, val = (begin I18n.backend.translate locale, key; rescue; end) %>
-  <%= submit_tag "Save", "data-disable-with" => "Saving..." %>
-  <% if (default_val = (begin Translator.simple_backend.translate locale, key; rescue; end;)) != val %>
-    <%= link_to "Default", '#', "data-recover" => default_val || "" %>
-  <% end %>
+    </div>
 <% end %>
-

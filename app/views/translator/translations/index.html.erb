@@ -5,34 +5,33 @@
     <li><%= link_to_unless_current "Framework Translations", translations_path(:show => "framework") %></li>
     <li><%= link_to_unless_current "All Translations", translations_path(:show => "all") %></li>
   </ul>
-
+  <div class="simple_form">
   <% @keys.each do |key| %>
-    <%= key %>
-    <% Translator.locales.each do |locale| %>
-      <%= render :partial => "form", :locals => {:locale => locale, :key => key} %>
+ 
+      <h5><%= key %></h5>
+      <% if Translator.chosen_locales != nil %>
+        <% Translator.chosen_locales.each do |locale| %>
+          <%= render :partial => "form", :locals => {:locale => locale, :key => key} %>
+        <% end %>
+      <% else %>
+        <% Translator.locales.each do |locale| %>
+          <%= render :partial => "form", :locals => {:locale => locale, :key => key} %>
+        <% end %>
+      <% end %>
     <% end %>
-  <% end %>
-
+  
+  </div>
   <% unless @total_pages < 2 %>
     <% (1..@total_pages).each do |p| %>
-      <%= link_to_unless_current p, translations_path(:show => params[:show], :page => p) %>
+      <%= link_to_unless_current p, translations_path(:show => params[:show], :page => p ) %>
     <% end %>
   <% end %>
-</div>
-
-<div id="footer">
-  <div id="shameless">
-    Brought to you by <%= link_to "AmberBit" %> Ruby on Rails web development team.
-    <br/>
-    2010-2011 &copy; Hubert Łępicki &lt;hubert.lepicki@amberbit.com&gt;
-  </div>
-  <%= link_to image_tag("http://amberbit.com/images/logo.png"), "http://amberbit.com" %>
 </div>
 
 <script type="text/javascript">
   $("a[data-recover]").live("click", function(event) {
     event.preventDefault();
-    $("input[type='text']", $(this).parents("form")).val($(this).attr("data-recover"));
+    $("input[type='text']", $(this).parents(".translate_form")).val($(this).attr("data-recover"));
   });
 </script>
 
